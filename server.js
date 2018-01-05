@@ -44,4 +44,9 @@ io.sockets.on('connection', function (socket) {
       io.emit( 'disconnected_user', {id: user_id, name: name});
     }
   })
+
+  socket.on( "form", function (data){
+    console.log(data.values)
+    socket.emit( 'update_message', {submited:  data.values, ex: 'hi'});
+  })
 })

@@ -12,14 +12,14 @@
 
             socket.on( 'joined_user', function (data){
               console.log( 'User: '  + data.name);
-              $('div.info').html('<h1>New User <span>' + data.name + '</span> has joined!</h1>')
+              $('div.info').html('<h2>New User <span>' + data.name + '</span> has joined!</h2>')
               $('div.users').append('<div class="blue" id="' + data.id + '"> <p>' + data.name + '</p> </div>')
 
             });
 
             socket.on( 'disconnected_user', function (data){
               console.log( 'User: '  + data.id + ' has left');
-              $('div.info').html('<h1>User <span>' + data.name + '</span> has disconnected!</h1>')
+              $('div.info').html('<h2>User <span>' + data.name + '</span> has disconnected!</h2>')
               $('#'+data.id).remove()
             });
 
@@ -31,11 +31,40 @@
                 $('div.users').append('<div class="blue" id="' + all_users[i].id + '"> <p>' + all_users[i].name + '</p> </div>')
               }
             });
+
+            $( 'form').submit(function(){
+              var inputs = $('form :input');
+              var values = {};
+              inputs.each(function() {
+                  values[this.name] = $(this).val();
+              });
+              console.log(values)
+
+              socket.emit( "form", {values: values});
+              event.preventDefault();
+            });
+
+            socket.on( 'update_message', function (data){
+              console.log(data.submited)
+              $( "div.result" ).append('<h4>You emitted the following information to the server:</h4>')
+              $.each(data.submited, function(key, value){
+                if(key == ""){return true; }
+                $( "div.result" ).append('<p>'+ key + ':' + value + '</p>')
+              })
+            });
+
         })
     </script>
 </head>
 <body>
   <div class="info"></div>
   <div class="users"></div>
+  <h1>Conversation Board</h1>
+  <div class="result"></div>
+  <form class="chat" action="index.html" method="post">
+    <input type="text" name="message" placeholder="enter your message here">
+    <input type="submit" value="Send">
+  </form>
+
 </body>
 </html>
