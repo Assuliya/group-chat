@@ -1,0 +1,14 @@
+h1{color: darkgreen}
+
+.blue{
+  background-color: lightgreen;
+  width: 6em;
+  height: 3em;
+  line-height: 3em;
+  word-wrap: break-word;
+  font-size: 2em;
+  color: darkgreen;
+  text-align: center;
+}
+
+span{color: red}
