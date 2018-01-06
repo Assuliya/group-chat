@@ -18,6 +18,7 @@ var server = app.listen(8000, function() {
 })
 
 var users = [];
+var messages = [];
 
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
@@ -31,6 +32,8 @@ io.sockets.on('connection', function (socket) {
     console.log(users)
     socket.broadcast.emit( 'joined_user', {name: data.name, id: user_id});
     socket.emit( 'existing_users', {users: users});
+    socket.emit( 'existing_messages', {messages: messages});
+
   })
 
   socket.on('disconnect', function (socket) {
@@ -46,7 +49,14 @@ io.sockets.on('connection', function (socket) {
   })
 
   socket.on( "form", function (data){
-    console.log(data.values)
-    socket.emit( 'update_message', {submited:  data.values, ex: 'hi'});
+    var user_name
+    for(var i = 0; i < users.length; i++){
+      if(users[i].id == user_id){
+        user_name = users[i].name
+      }
+    }
+    messages.push({name: user_name, id: user_id, message: data.values.message})
+    console.log(messages)
+    io.emit( 'new_message', {name: user_name, id: user_id, message: data.values.message});
   })
 })

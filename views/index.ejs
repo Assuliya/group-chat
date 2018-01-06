@@ -11,24 +11,20 @@
             socket.emit( "new_user", {name: name});
 
             socket.on( 'joined_user', function (data){
-              console.log( 'User: '  + data.name);
               $('div.info').html('<h2>New User <span>' + data.name + '</span> has joined!</h2>')
-              $('div.users').append('<div class="blue" id="' + data.id + '"> <p>' + data.name + '</p> </div>')
+              $('div.users').append('<div class="user" id="' + data.id + '"> <p>' + data.name + '</p> </div>')
 
             });
 
             socket.on( 'disconnected_user', function (data){
-              console.log( 'User: '  + data.id + ' has left');
               $('div.info').html('<h2>User <span>' + data.name + '</span> has disconnected!</h2>')
               $('#'+data.id).remove()
             });
 
             socket.on( 'existing_users', function (data){
-              console.log( 'Existing: '  + data.users);
               var all_users = data.users
               for(var i = 0; i < all_users.length; i++){
-                console.log(all_users[i].name)
-                $('div.users').append('<div class="blue" id="' + all_users[i].id + '"> <p>' + all_users[i].name + '</p> </div>')
+                $('div.users').append('<div class="user" id="' + all_users[i].id + '"> <p>' + all_users[i].name + '</p> </div>')
               }
             });
 
@@ -38,21 +34,23 @@
               inputs.each(function() {
                   values[this.name] = $(this).val();
               });
-              console.log(values)
-
               socket.emit( "form", {values: values});
+              this.reset();
               event.preventDefault();
             });
 
-            socket.on( 'update_message', function (data){
-              console.log(data.submited)
-              $( "div.result" ).append('<h4>You emitted the following information to the server:</h4>')
-              $.each(data.submited, function(key, value){
-                if(key == ""){return true; }
-                $( "div.result" ).append('<p>'+ key + ':' + value + '</p>')
-              })
-            });
+            socket.on( 'new_message', function (data){
+              $('div.messages').append('<div class="message" id="' + data.id + '"> <p>' + data.name + ' : ' + data.message + '</p> </div>')
+            })
 
+            socket.on( 'existing_messages', function (data){
+              console.log( 'Existing messages: '  + data.messages);
+              var all_messages = data.messages
+              for(var i = 0; i < all_messages.length; i++){
+                console.log(all_messages[i].name)
+                $('div.messages').append('<div class="message" id="' + all_messages[i].id + '"> <p>' + all_messages[i].name + ' : ' + all_messages[i].message + '</p> </div>')
+              }
+            });
         })
     </script>
 </head>
@@ -60,11 +58,10 @@
   <div class="info"></div>
   <div class="users"></div>
   <h1>Conversation Board</h1>
-  <div class="result"></div>
+  <div class="messages"></div>
   <form class="chat" action="index.html" method="post">
     <input type="text" name="message" placeholder="enter your message here">
     <input type="submit" value="Send">
   </form>
-
 </body>
 </html>

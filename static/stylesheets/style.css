@@ -1,15 +1,16 @@
 h2{color: darkgreen}
 h1{color: purple}
 
-
-.blue{
-  background-color: lightgreen;
+.user{
+  display: inline-block;
+  background-color: lightblue;
   width: 6em;
   height: 3em;
-  line-height: 3em;
+  border: solid 0.1em darkblue;
+  margin: 1em;
   word-wrap: break-word;
   font-size: 2em;
-  color: darkgreen;
+  color: darkblue;
   text-align: center;
 }
 
